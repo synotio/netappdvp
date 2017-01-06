@@ -131,6 +131,11 @@ func (d ndvpDriver) Create(r volume.Request) volume.Response {
 	if from, ok := opts["from"]; ok {
 		source := d.volumeName(from)
 
+		//If 'fromRaw' is set to true, do not use prefixing for the source volume
+		if fromRaw, ok := opts["fromRaw"]; ok && fromRaw == "true" {
+			source = from
+		}
+
 		// If 'fromSnapshot' is specified, we use the existing snapshot instead
 		snapshot := opts["fromSnapshot"]
 		createErr = d.sd.CreateClone(target, source, snapshot, d.snapshotPrefix())
